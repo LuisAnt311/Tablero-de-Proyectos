@@ -87,3 +87,4 @@ class Riesgo(models.Model):
 
     def __str__(self):
         return f'Riesgo del proyecto {self.proyecto.nombre_proyecto}'
+

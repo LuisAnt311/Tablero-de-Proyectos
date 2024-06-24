@@ -1,16 +1,15 @@
-# middleware.py
 from django.shortcuts import redirect
-
+from django.urls import reverse
 class RoleBasedRedirectMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.user.is_authenticated:
-            if 'usuario_id' in request.session:
-                usuario_rol = request.session.get('usuario_rol', None)
-                if usuario_rol == 'Administrador' and request.path != '/admin_dashboard/':
-                    return redirect('admin_dashboard')
-                elif usuario_rol == 'Usuario' and request.path != '/user_dashboard/':
-                    return redirect('user_dashboard')
-        return self.get_response(request)
+        if not request.path.startswith('/logout/') and 'usuario_id' in request.session:
+            usuario_rol = request.session.get('usuario_rol')
+            if usuario_rol == 'Administrador' and not request.path.startswith('/admin_dashboard/'):
+                return redirect(reverse('admin_dashboard'))
+            elif usuario_rol == 'Usuario' and not request.path.startswith('/user_dashboard/'):
+                return redirect(reverse('user_dashboard'))
+        response = self.get_response(request)
+        return response

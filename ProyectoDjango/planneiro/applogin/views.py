@@ -2,6 +2,8 @@ from django.http import HttpResponse
 from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo
 from .forms import FaseForm, RolForm, LoginForm
 from django.shortcuts import render,redirect
+from django.views.decorators.http import require_POST,require_GET
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def hello(request):
@@ -41,7 +43,6 @@ def agregar_rol(request):
         rol_form = RolForm()  # Crear una instancia de RolForm vacía para mostrar el formulario
 
     return render(request, 'applogin/AgregarRol.html', {'rol_form': rol_form})
-
 def login_view(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -51,8 +52,9 @@ def login_view(request):
             try:
                 usuario = Usuario.objects.get(correo=email)
                 if password == usuario.contrasena:
-                    # Simular el login de Django
+                    # Autenticación exitosa
                     request.session['usuario_id'] = usuario.id
+                    request.session['usuario_nombre'] = usuario.nombre_usuario
                     request.session['usuario_rol'] = usuario.rol.nombre_rol
                     if usuario.rol.nombre_rol == 'Administrador':
                         return redirect('admin_dashboard')
@@ -65,4 +67,37 @@ def login_view(request):
     else:
         form = LoginForm()
 
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'applogin/login.html', {'form': form})
+
+
+def admin_dashboard(request):
+    if request.session.get('usuario_rol') != 'Administrador':
+        return redirect('login')  # Redireccionar si el usuario no es administrador
+
+    contexto = {
+        'usuario_nombre': request.session.get('usuario_nombre'),
+        'usuario_rol': request.session.get('usuario_rol'),
+    }
+    return render(request, 'MenusAdmins/admin_dashboard.html', contexto)
+
+
+def user_dashboard(request):
+    if request.session.get('usuario_rol') != 'Usuario':
+        return redirect('login')  # Redireccionar si el usuario no es usuario normal
+
+    contexto = {
+        'usuario_nombre': request.session.get('usuario_nombre'),
+        'usuario_rol': request.session.get('usuario_rol'),
+    }
+    return render(request, 'MenusUsuarios/user_dashboard.html', contexto)
+
+
+@require_GET
+def logout_view(request):
+    if 'usuario_id' in request.session:
+        del request.session['usuario_id']
+    if 'usuario_nombre' in request.session:
+        del request.session['usuario_nombre']
+    if 'usuario_rol' in request.session:
+        del request.session['usuario_rol']
+    return redirect('login')
