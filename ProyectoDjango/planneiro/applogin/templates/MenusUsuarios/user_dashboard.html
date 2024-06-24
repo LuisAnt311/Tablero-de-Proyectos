@@ -1,16 +1,27 @@
-<!-- templates/user_dashboard.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Usuario</title>
-</head>
-<body>
+{% extends 'MenusUsuarios/baseusu_dashboard.html' %}
+{% block title %}Panel de Usuario{% endblock %}
+{% block content %}
     <h2>Bienvenido, {{ usuario_nombre }}</h2>
-    <p>Tu rol es: {{ usuario_rol }}</p>
-    {% if request.session.usuario_id %}
-    <a href="{% url 'logout' %}">Cerrar Sesión</a>
-{% endif %}
-</body>
-</html>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Funcionalidad 1
+                </div>
+                <div class="card-body">
+                    <p>Contenido de la funcionalidad 1 para usuarios</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    Funcionalidad 2
+                </div>
+                <div class="card-body">
+                    <p>Contenido de la funcionalidad 2 para usuarios</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

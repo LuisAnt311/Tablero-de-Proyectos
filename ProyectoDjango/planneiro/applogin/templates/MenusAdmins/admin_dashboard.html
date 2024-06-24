@@ -1,16 +1,66 @@
-<!-- templates/admin_dashboard.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Administrador</title>
-</head>
-<body>
-    <h2>Bienvenido, {{ usuario_nombre }}</h2>
-    <p>Tu rol es: {{ usuario_rol }}</p>
-    {% if request.session.usuario_id %}
-    <a href="{% url 'logout' %}">Cerrar Sesión</a>
-{% endif %}
-</body>
-</html>
+{% extends 'MenusAdmins/base_dashboard.html' %}
+{% block title %}Panel de Administrador{% endblock %}
+{% block content %}
+    <h2>Proyectos</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Proyecto</th>
+                    <th>Administrador</th>
+                    <th>Estado</th>
+                    <th>Porcentaje</th>
+                    <th>Fecha de Inicio</th>
+                    <th>Fecha Final</th>
+                    <th>Presupuesto</th>
+                    <th>Costo Final</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proyecto in proyectos %}
+                <tr>
+                    <td>{{ proyecto.id }}</td>
+                    <td>{{ proyecto.nombre_proyecto }}</td>
+                    <td>{{ proyecto.admin_proyecto_usuario.nombre_usuario }}</td>
+                    <td>{{ proyecto.estado }}</td>
+                    <td>{{ proyecto.porcentaje }}</td>
+                    <td>{{ proyecto.fecha_inicio }}</td>
+                    <td>{{ proyecto.fecha_final }}</td>
+                    <td>{{ proyecto.presupuesto }}</td>
+                    <td>{{ proyecto.costo_final }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">No se encontraron proyectos.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if proyectos.has_other_pages %}
+    <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center">
+            {% if proyectos.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ proyectos.previous_page_number }}" aria-label="Anterior">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+            {% for num in proyectos.paginator.page_range %}
+            <li class="page-item {% if num == proyectos.number %}active{% endif %}">
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            </li>
+            {% endfor %}
+            {% if proyectos.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ proyectos.next_page_number }}" aria-label="Siguiente">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+{% endblock %}
