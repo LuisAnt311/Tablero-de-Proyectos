@@ -1,4 +1,4 @@
-##Estructura de base de datos y arquitectura del proyecto
+## Estructura de base de datos y arquitectura del proyecto
 
 [Enlace a Excalidraw](https://excalidraw.com/#json=a2MmBFepBF2qd9OjwLtex,jVdCVME9wTOmRaRyGg2SnA)
 
