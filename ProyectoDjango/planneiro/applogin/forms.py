@@ -21,5 +21,5 @@ class RolForm(forms.ModelForm):
         }
 
 class LoginForm(forms.Form):
-    email = forms.EmailField(label='Correo electrónico', max_length=100)
-    password = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
+    email = forms.EmailField(label='Correo electrónico', max_length=100, widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su correo electrónico'}))
+    password = forms.CharField(label='Contraseña', widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su contraseña'}))
