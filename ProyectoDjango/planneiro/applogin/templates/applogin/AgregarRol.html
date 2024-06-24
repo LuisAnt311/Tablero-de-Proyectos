@@ -1,0 +1,18 @@
+<!-- secundaria/templates/secundaria/agregar_fase_rol.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agregar Fase y Rol</title>
+</head>
+<body>
+    <h1>Agregar Nueva Fase y Rol</h1>
+    <form method="post">
+        {% csrf_token %}
+        <h2>Nuevo Rol</h2>
+        {{ rol_form.as_p }}
+       
+        <button type="submit">Guardar</button>
+    </form>
+</body>
+</html>

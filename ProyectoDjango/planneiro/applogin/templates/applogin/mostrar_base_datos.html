@@ -1,0 +1,72 @@
+<!-- mostrar_base_datos.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mostrar Base de Datos</title>
+</head>
+<body>
+    <h1>Roles</h1>
+    <ul>
+        {% for rol in roles %}
+            <li>{{ rol.id }}: {{ rol.nombre_rol }} - {{ rol.descripcion_rol }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Usuarios</h1>
+    <ul>
+        {% for usuario in usuarios %}
+            <li>{{ usuario.id }}: {{ usuario.nombre_usuario }} - {{ usuario.correo }} - {{ usuario.rol.nombre_rol }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Proyectos</h1>
+    <ul>
+        {% for proyecto in proyectos %}
+            <li>{{ proyecto.id }}: {{ proyecto.nombre_proyecto }} - {{ proyecto.estado }} - {{ proyecto.porcentaje }}%</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Impactos</h1>
+    <ul>
+        {% for impacto in impactos %}
+            <li>{{ impacto.id }}: {{ impacto.proyecto.nombre_proyecto }} - {{ impacto.impacto }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Recursos Materiales</h1>
+    <ul>
+        {% for recurso_material in recursos_materiales %}
+            <li>{{ recurso_material.id }}: {{ recurso_material.proyecto.nombre_proyecto }} - {{ recurso_material.nombre_recurso }} - {{ recurso_material.cantidad }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Recursos Humanos</h1>
+    <ul>
+        {% for recurso_humano in recursos_humanos %}
+            <li>{{ recurso_humano.id }}: {{ recurso_humano.proyecto.nombre_proyecto }} - {{ recurso_humano.usuario.nombre_usuario }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Documentos</h1>
+    <ul>
+        {% for documento in documentos %}
+            <li>{{ documento.id }}: {{ documento.proyecto.nombre_proyecto }} - <a href="{{ documento.url_documento }}">{{ documento.url_documento }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h1>Fases</h1>
+    <ul>
+        {% for fase in fases %}
+            <li>{{ fase.id }}: {{ fase.proyecto.nombre_proyecto }} - {{ fase.fase }} - {% if fase.concluido %}Concluido{% else %}No Concluido{% endif %}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Riesgos</h1>
+    <ul>
+        {% for riesgo in riesgos %}
+            <li>{{ riesgo.id }}: {{ riesgo.proyecto.nombre_proyecto }} - {{ riesgo.porcentaje_riesgo }}% - {{ riesgo.descripcion_riesgo }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
