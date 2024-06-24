@@ -36,7 +36,7 @@ def agregar_rol(request):
         rol_form = RolForm(request.POST)
         if rol_form.is_valid():
             rol_form.save()  # Guardar el formulario si es válido
-            return redirect('mostrar_roles')  # Redirigir a una página de éxito o a la lista de roles
+            return redirect('mostrar_base_datos')  # Redirigir a una página de éxito o a la lista de roles
     else:
         rol_form = RolForm()  # Crear una instancia de RolForm vacía para mostrar el formulario
 
