@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'applogin.middleware.RoleBasedRedirectMiddleware',
 ]
 
 ROOT_URLCONF = 'planneiro.urls'

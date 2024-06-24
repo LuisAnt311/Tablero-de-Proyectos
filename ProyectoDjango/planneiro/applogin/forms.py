@@ -19,3 +19,7 @@ class RolForm(forms.ModelForm):
             'nombre_rol': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre del rol'}),
             'descripcion_rol': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Ingrese la descripción del rol'}),
         }
+
+class LoginForm(forms.Form):
+    email = forms.EmailField(label='Correo electrónico', max_length=100)
+    password = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
