@@ -11,7 +11,10 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">
-         
+
+       
+
+            
             <!-- Formulario de búsqueda -->
             <form method="GET" action="{% url 'admin_dashboard' %}">
                 <div class="input-group mb-3">
@@ -29,11 +32,34 @@
                         <i class="fas fa-plus-circle mr-2"></i> Agregar Proyecto
                     </button>
                 </div>
+
+                <!-- Incluir CSS de Bootstrap 5 -->
+
                 <div class="col-md-4">
                     <button type="button" class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#AnadirRecursoHumano">
                         <i class="fas fa-user-plus mr-2"></i> Agregar Recurso Humano
                     </button>
                 </div>
+
+                <div class="modal fade" id="AnadirRecursoHumano" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Añadir cuenta de recurso humanos</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="post" action="{% url 'insertar_usuario' %}">
+                                {% csrf_token %}
+                                {{ form_usuario.as_p }}
+                                <button type="submit" class="btn btn-primary">Guardar Usuario</button>
+                            </form>
+                        </div>
+                   
+                      </div>
+                    </div>
+                  </div>
+
                 <div class="col-md-4">
                     <button type="button" class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#AnadirRecursoMaterial">
                         <i class="fas fa-box-open mr-2"></i> Asignar Recurso Material

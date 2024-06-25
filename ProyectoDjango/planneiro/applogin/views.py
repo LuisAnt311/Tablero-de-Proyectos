@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo
-from .forms import FaseForm, RolForm, LoginForm,ProyectoForm,UsuarioForm,AsignarRecursoHumanoForm, AgregarRecursoMaterialForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm,ProyectoEditarForm
+from .forms import FaseForm, RolForm, LoginForm,ProyectoForm,UsuarioForm,AsignarRecursoHumanoForm, AgregarRecursoMaterialForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm,ProyectoEditarForm,InsertarUsuarioForm
 from django.core.exceptions import ValidationError
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.decorators.http import require_POST,require_GET
@@ -13,7 +13,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def hello(request):
     return HttpResponse("Hola mundo")
-
+def mi_vista(request):
+    return render(request, 'applogin/index.html')
 
 def mostrar_base_datos(request):
     roles = Rol.objects.all()
@@ -80,7 +81,7 @@ from django.db.models import Q
 def admin_dashboard(request):
     if request.session.get('usuario_rol') != 'Administrador':
         return redirect('login')  # Redireccionar si el usuario no es administrador
-    
+
     usuarios = Usuario.objects.all()
     proyectos = Proyecto.objects.all().order_by('id')  # Ordenar proyectos por ID
 
@@ -95,7 +96,7 @@ def admin_dashboard(request):
         )
 
     # Paginación
-    paginator = Paginator(proyectos, 5)  # Mostrar 10 proyectos por página
+    paginator = Paginator(proyectos, 5)  # Mostrar 5 proyectos por página
     page = request.GET.get('page')
     try:
         proyectos_paginados = paginator.page(page)
@@ -104,18 +105,38 @@ def admin_dashboard(request):
     except EmptyPage:
         proyectos_paginados = paginator.page(paginator.num_pages)
 
-    form = ProyectoForm()  # Crear una instancia del formulario de proyecto
-
     contexto = {
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
         'usuarios': usuarios,
         'proyectos': proyectos_paginados,  # Cambiar a proyectos paginados
-        'form': form,  # Incluir formulario en el contexto
+        'form': ProyectoForm(),  # Incluir formulario de proyecto en el contexto
+        'form_usuario': InsertarUsuarioForm(),  # Incluir formulario de usuario en el contexto
     }
     return render(request, 'MenusAdmins/admin_dashboard.html', contexto)
 
+from .forms import InsertarUsuarioForm
 
+def insertar_usuario(request):
+    if request.method == 'POST':
+        form = InsertarUsuarioForm(request.POST)
+        if form.is_valid():
+            correo = form.cleaned_data['correo']
+            usuario_existente = Usuario.objects.filter(correo=correo).first()
+            if usuario_existente:
+                # Actualizar usuario existente
+                usuario_existente.rol = form.cleaned_data['rol']
+                usuario_existente.nombre_usuario = form.cleaned_data['nombre_usuario']
+                usuario_existente.contrasena = form.cleaned_data['contrasena']
+                usuario_existente.save()
+                return HttpResponse("Usuario actualizado correctamente.")
+            else:
+                # Insertar nuevo usuario
+                form.save()
+                return HttpResponse("Usuario insertado correctamente.")
+        else:
+            return HttpResponse(f"Formulario inválido: {form.errors}")
+    return HttpResponse("Solicitud no válida.")
 
 def user_dashboard(request):
     if request.session.get('usuario_rol') != 'Usuario':

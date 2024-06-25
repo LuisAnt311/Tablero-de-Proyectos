@@ -2,6 +2,20 @@ from django import forms
 from .models import Fase, Rol,Proyecto,Usuario,RecursoHumano,RecursoMaterial,Documento,Riesgo
 from django.core.exceptions import ValidationError 
 
+
+class InsertarUsuarioForm(forms.ModelForm):
+    class Meta:
+        model = Usuario
+        fields = ['rol', 'correo', 'nombre_usuario', 'contrasena']
+        widgets = {
+            'rol': forms.Select(attrs={'class': 'form-control'}, choices=[
+                ('Administrador', 'Administrador'),
+                ('Usuario', 'Usuario'),
+            ]),
+            'correo': forms.EmailInput(attrs={'class': 'form-control'}),
+            'nombre_usuario': forms.TextInput(attrs={'class': 'form-control'}),
+            'contrasena': forms.PasswordInput(attrs={'class': 'form-control'}),
+        }
 class FaseForm(forms.ModelForm):
     class Meta:
         model = Fase
@@ -98,12 +112,15 @@ class UsuarioForm(forms.ModelForm):
         # Puedes agregar más validaciones aquí si es necesario
         return cleaned_data
 class AsignarRecursoHumanoForm(forms.ModelForm):
+    usuario = forms.ModelChoiceField(
+        queryset=Usuario.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        empty_label="Seleccione un usuario"
+    )
+
     class Meta:
         model = RecursoHumano
         fields = ['usuario']
-        widgets = {
-            'usuario': forms.Select(attrs={'class': 'form-control'}),
-        }
 
     def __init__(self, proyecto, *args, **kwargs):
         super().__init__(*args, **kwargs)

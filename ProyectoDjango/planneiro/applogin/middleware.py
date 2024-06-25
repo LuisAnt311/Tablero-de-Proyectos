@@ -11,12 +11,14 @@ class RoleBasedRedirectMiddleware:
             if (usuario_rol == 'Administrador' and not request.path.startswith('/admin_dashboard/') and
                 not request.path.startswith('/agregar_proyecto/') and
                 not request.path.startswith('/proyecto/') and
+                not request.path.startswith('/insertar_usuario/') and
                 not request.path.startswith('/editar_proyecto/')):
                 return redirect(reverse('admin_dashboard'))
             elif (usuario_rol == 'Usuario' and not request.path.startswith('/user_dashboard/') and
                   not request.path.startswith('/agregar_proyecto/') and
                   not request.path.startswith('/proyecto/') and
                   not request.path.startswith('/proyecto/') and
+                  not request.path.startswith('/insertar_usuario/') and
                   not request.path.startswith('/proyecto/<int:proyecto_id>/agregar-recurso-material/')):
                 
                 return redirect(reverse('user_dashboard'))

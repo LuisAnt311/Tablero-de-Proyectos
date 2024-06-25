@@ -1,0 +1,157 @@
+<!-- mi_app/templates/mi_plantilla.html -->
+{% load static %}  <!-- Asegúrate de cargar las etiquetas estáticas -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página de Inicio - Mi Sitio Web</title>
+    <!-- Incluir Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Estilos adicionales -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap');
+
+        :root {
+            --primary-color: #3a4052;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.5;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            font-weight: 300;
+            font-size: 60px;
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+        
+        .showcase {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            padding: 0 20px;
+        }
+        
+        .video-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--primary-color) url('./https://traversymedia.com/downloads/cover.jpg') no-repeat center
+                center/cover;
+        }
+        
+        .video-container video {
+            min-width: 100%;
+            min-height: 100%;
+          position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+        }
+        
+        .video-container:after {
+            content: '';
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(0, 0, 0, 0.5);
+            position: absolute;
+        }
+        
+        .content {
+            z-index: 2;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 30px;
+            background: var(--primary-color);
+            color: #fff;
+            border-radius: 5px;
+            border: solid #fff 1px;
+            margin-top: 25px;
+            opacity: 0.7;
+        }
+        
+        .btn:hover {
+            transform: scale(0.98);
+        }
+        
+        #about {
+            padding: 40px;
+            text-align: center;
+        }
+        
+        #about p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: auto;
+        }
+        
+        #about h2 {
+            margin: 30px 0;
+            color: var(--primary-color);
+        }
+        
+        .social a {
+            margin: 0 5px;
+        }
+    </style>
+</head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" crossorigin="anonymous" />
+
+<body>
+    <section class="showcase">
+        <div class="video-container">
+            <video src="https://traversymedia.com/downloads/video.mov" autoplay muted loop></video>
+        </div>
+        <div class="content">
+            <img src="{% static 'Applogin/images/Logo.png' %}" alt="Plannerio Logo" class="logo">
+            <h1>PLANNIERO</h1>
+            <h3>Inicia sesion para la mejor gestion de proyectos</h3>
+            <a href="{% url 'login' %}" class="btn">Login</a>
+        </div>
+    </section>
+
+    <section id="about">
+        <h1>Descripcion</h1>
+        <p>
+           Proyecto de tablero de proyectos desarrollado con el fin de organizar y dar una opcion viable de gestion de proyectos
+           desarrollado con Django y Mysql
+        </p>
+        
+        <a href="https://excalidraw.com/#json=a2MmBFepBF2qd9OjwLtex,jVdCVME9wTOmRaRyGg2SnA" class="btn">Link de la arquitectura</a>
+        <a href="https://github.com/LuisAnt311/Tablero-de-Proyectos" class="btn">
+            <i class="fab fa-github"></i> Link repositorio
+        </a>
+    </section>
+
+    <!-- Incluir Bootstrap JS y dependencias -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
