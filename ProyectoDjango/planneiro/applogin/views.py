@@ -9,6 +9,8 @@ from .forms import ProyectoForm
 from django.http import JsonResponse
 from django.urls import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from .forms import InsertarUsuarioForm
 # Create your views here.
 
 def hello(request):
@@ -115,7 +117,6 @@ def admin_dashboard(request):
     }
     return render(request, 'MenusAdmins/admin_dashboard.html', contexto)
 
-from .forms import InsertarUsuarioForm
 
 def insertar_usuario(request):
     if request.method == 'POST':

@@ -2,7 +2,7 @@ from django import forms
 from .models import Fase, Rol,Proyecto,Usuario,RecursoHumano,RecursoMaterial,Documento,Riesgo,RelacionDocumento
 from django.core.exceptions import ValidationError 
 
-
+#La opcion administrador se oculta con javascript en la vista por temas de bugs
 class InsertarUsuarioForm(forms.ModelForm):
     class Meta:
         model = Usuario
@@ -11,6 +11,7 @@ class InsertarUsuarioForm(forms.ModelForm):
             'rol': forms.Select(attrs={'class': 'form-control'}, choices=[
                 ('Administrador', 'Administrador'),
                 ('Usuario', 'Usuario'),
+                
             ]),
             'correo': forms.EmailInput(attrs={'class': 'form-control'}),
             'nombre_usuario': forms.TextInput(attrs={'class': 'form-control'}),
