@@ -18,7 +18,8 @@ class RoleBasedRedirectMiddleware:
                   not request.path.startswith('/agregar_proyecto/') and
                   not request.path.startswith('/proyecto/') and
                   not request.path.startswith('/proyecto/') and
-              
+                  not request.path.startswith('/relacionar_documentousuario/') and
+               
                   not request.path.startswith('/insertar_usuario/') and
                   not request.path.startswith('/proyecto/<int:proyecto_id>/agregar-recurso-material/')):
                 

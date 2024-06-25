@@ -1,6 +1,6 @@
 from django.http import HttpResponse
-from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo
-from .forms import FaseForm, RolForm, LoginForm,ProyectoForm,UsuarioForm,AsignarRecursoHumanoForm, AgregarRecursoMaterialForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm,ProyectoEditarForm,InsertarUsuarioForm
+from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo,RelacionDocumento
+from .forms import RelacionarDocumentoForm, RolForm, LoginForm,ProyectoForm,UsuarioForm,AsignarRecursoHumanoForm, AgregarRecursoMaterialForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm,ProyectoEditarForm,InsertarUsuarioForm
 from django.core.exceptions import ValidationError
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.decorators.http import require_POST,require_GET
@@ -138,7 +138,7 @@ def insertar_usuario(request):
             return HttpResponse(f"Formulario inválido: {form.errors}")
     return HttpResponse("Solicitud no válida.")
 
-from .forms import AgregarDocumentoFormProyecto
+from .forms import AgregarDocumentoFormProyecto,RelacionarDocumentoForm
 def user_dashboard(request):
     if request.session.get('usuario_rol') != 'Usuario':
         return redirect('login')  # Redireccionar si el usuario no es usuario normal
@@ -161,15 +161,23 @@ def user_dashboard(request):
         form = AgregarDocumentoFormProyecto(usuario, request.POST)
         if form.is_valid():
             documento = form.save()
-            return redirect('user_dashboard')  # Redireccionar después de guardar el documento
+            return redirect('user_dashboard')
+        elif 'submit_relacion' in request.POST:
+            form_relacion = RelacionarDocumentoForm(request.POST)
+            if form_relacion.is_valid():
+                form_relacion.save()
+                return redirect('user_dashboard')  # Redireccionar después de guardar el documento
     else:
         form = AgregarDocumentoFormProyecto(usuario)
+        form_relacion = RelacionarDocumentoForm()
+
 
     contexto = {
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
         'proyectos': proyectos,
-        'form': form,  # Pasar el formulario al contexto
+        'form': form,
+        'form_relacion': form_relacion  # Pasar el formulario al contexto
     }
     return render(request, 'MenusUsuarios/user_dashboard.html', contexto)
 
@@ -230,7 +238,7 @@ def detalles_proyecto(request, proyecto_id):
     documentos = Documento.objects.filter(proyecto=proyecto)
     fases = Fase.objects.filter(proyecto=proyecto)
     riesgos = Riesgo.objects.filter(proyecto=proyecto)
-
+    relaciones_documento = RelacionDocumento.objects.filter(fase__proyecto=proyecto).select_related('documento', 'fase')
     # Inicialización de los formularios con el contexto del proyecto
     agregar_recurso_material_form = AgregarRecursoMaterialForm(proyecto, request.POST or None)
     asignar_recurso_humano_form = AsignarRecursoHumanoForm(proyecto, request.POST or None)
@@ -246,6 +254,7 @@ def detalles_proyecto(request, proyecto_id):
         'recursos_humanos': recursos_humanos,
         'documentos': documentos,
         'fases': fases,
+        'relaciones_documento': relaciones_documento,
         'riesgos': riesgos,
         'agregar_recurso_material_form': agregar_recurso_material_form,
         'asignar_recurso_humano_form': asignar_recurso_humano_form,
@@ -353,3 +362,13 @@ def editar_proyecto(request, proyecto_id):
         'proyecto': proyecto,
     }
     return render(request, 'MenusAdmins/editarproyecto.html', context)
+
+def relacionar_documento(request):
+    if request.method == 'POST':
+        form = RelacionarDocumentoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('user_dashboard')
+    else:
+        form = RelacionarDocumentoForm()
+    return render(request, 'relacionar_documento.html', {'form': form})
