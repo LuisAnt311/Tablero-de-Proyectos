@@ -1,5 +1,5 @@
 from django import forms
-from .models import Fase, Rol,Proyecto,Usuario,RecursoHumano,RecursoMaterial,Documento,Riesgo
+from .models import Fase, Rol,Proyecto,Usuario,RecursoHumano,RecursoMaterial,Documento,Riesgo,RelacionDocumento
 from django.core.exceptions import ValidationError 
 
 
@@ -204,3 +204,10 @@ class AgregarFaseForm(forms.ModelForm):
     def __init__(self, proyecto, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.instance.proyecto = proyecto
+class RelacionarDocumentoForm(forms.ModelForm):
+    class Meta:
+        model = RelacionDocumento
+        fields = ['documento', 'fase']
+
+    documento = forms.ModelChoiceField(queryset=Documento.objects.all(), empty_label="Seleccione un documento")
+    fase = forms.ModelChoiceField(queryset=Fase.objects.all(), empty_label="Seleccione una fase")

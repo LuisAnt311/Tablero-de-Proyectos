@@ -81,6 +81,14 @@ class Fase(models.Model):
 
     def __str__(self):
         return f'Fase {self.fase} de proyecto {self.proyecto.nombre_proyecto}'
+    
+class RelacionDocumento(models.Model):
+    id = models.AutoField(primary_key=True)
+    documento = models.ForeignKey(Documento, on_delete=models.CASCADE, related_name='relaciones')
+    fase = models.ForeignKey(Fase, on_delete=models.CASCADE, related_name='relaciones')
+    
+    def __str__(self):
+        return f'Relación de Documento {self.documento.id} con Fase {self.fase.id}'
 
 class Riesgo(models.Model):
     id = models.AutoField(primary_key=True)
