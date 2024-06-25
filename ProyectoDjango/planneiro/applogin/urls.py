@@ -14,10 +14,12 @@ urlpatterns = [
     path('agregar_proyecto/', views.agregar_proyecto, name='agregar_proyecto'),
     path('registrar_usuario/', views.registrar_usuario, name='registrar_usuario'),
 
+   
 
     path('proyecto/<int:proyecto_id>/agregar-fase/', views.agregar_fase, name='agregar_fase'),
     path('proyecto/<int:proyecto_id>/asignar-recurso-humano/', views.asignar_recurso_humano, name='asignar_recurso_humano'),
     path('proyecto/<int:proyecto_id>/agregar-recurso-material/', views.agregar_recurso_material, name='agregar_recurso_material'),
     path('proyecto/<int:proyecto_id>/agregar-documento/', views.agregar_documento, name='agregar_documento'),
     path('proyecto/<int:proyecto_id>/agregar-riesgo/', views.agregar_riesgo, name='agregar_riesgo'),
+    path('editar_proyecto/<int:proyecto_id>/', views.editar_proyecto, name='editar_proyecto'),
 ]

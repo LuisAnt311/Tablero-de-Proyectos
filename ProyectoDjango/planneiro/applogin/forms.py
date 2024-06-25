@@ -54,6 +54,23 @@ class ProyectoForm(forms.ModelForm):
             raise forms.ValidationError('La fecha de inicio no puede ser posterior a la fecha final.')
 
         return cleaned_data
+class ProyectoEditarForm(forms.ModelForm):
+    class Meta:
+        model = Proyecto
+        fields = '__all__'  # Para incluir todos los campos del modelo Proyecto
+        widgets = {
+            'nombre_proyecto': forms.TextInput(attrs={'class': 'form-control'}),
+            'admin_proyecto_usuario': forms.Select(attrs={'class': 'form-control'}),
+            'estado': forms.TextInput(attrs={'class': 'form-control'}),
+            'porcentaje': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'fecha_inicio': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'fecha_final': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'presupuesto': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'costo_final': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
+
+
     
 class UsuarioForm(forms.ModelForm):
     class Meta:
@@ -80,11 +97,13 @@ class UsuarioForm(forms.ModelForm):
         contrasena = cleaned_data.get('contrasena')
         # Puedes agregar más validaciones aquí si es necesario
         return cleaned_data
-    
 class AsignarRecursoHumanoForm(forms.ModelForm):
     class Meta:
         model = RecursoHumano
         fields = ['usuario']
+        widgets = {
+            'usuario': forms.Select(attrs={'class': 'form-control'}),
+        }
 
     def __init__(self, proyecto, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -102,6 +121,11 @@ class AgregarRecursoMaterialForm(forms.ModelForm):
     class Meta:
         model = RecursoMaterial
         fields = ['nombre_recurso', 'cantidad', 'descripcion']
+        widgets = {
+            'nombre_recurso': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese nombre del recurso'}),
+            'cantidad': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la cantidad'}),
+            'descripcion': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese la descripción', 'rows': 3}),
+        }
 
     def __init__(self, proyecto, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -111,6 +135,10 @@ class AgregarDocumentoForm(forms.ModelForm):
     class Meta:
         model = Documento
         fields = ['descripcion', 'url_documento']
+        widgets = {
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la descripción'}),
+            'url_documento': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la URL del documento'}),
+        }
 
     def __init__(self, proyecto, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -120,6 +148,11 @@ class AgregarRiesgoForm(forms.ModelForm):
     class Meta:
         model = Riesgo
         fields = ['porcentaje_riesgo', 'descripcion_riesgo', 'plan_mitigacion_riesgo']
+        widgets = {
+            'porcentaje_riesgo': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el porcentaje de riesgo'}),
+            'descripcion_riesgo': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese la descripción del riesgo', 'rows': 3}),
+            'plan_mitigacion_riesgo': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Ingrese el plan de mitigación', 'rows': 3}),
+        }
 
     def __init__(self, proyecto, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -129,15 +162,11 @@ class AgregarFaseForm(forms.ModelForm):
     class Meta:
         model = Fase
         fields = ['fase', 'concluido']
+        widgets = {
+            'fase': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de la fase'}),
+            'concluido': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
 
     def __init__(self, proyecto, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.instance.proyecto = proyecto
-
-        self.fields['fase'].widget = forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Ingrese el nombre de la fase'
-        })
-        self.fields['concluido'].widget = forms.CheckboxInput(attrs={
-            'class': 'form-check-input'
-        })

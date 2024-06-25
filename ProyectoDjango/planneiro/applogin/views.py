@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo
-from .forms import FaseForm, RolForm, LoginForm,ProyectoForm,UsuarioForm,AsignarRecursoHumanoForm, AgregarRecursoMaterialForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm
+from .forms import FaseForm, RolForm, LoginForm,ProyectoForm,UsuarioForm,AsignarRecursoHumanoForm, AgregarRecursoMaterialForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm,ProyectoEditarForm
 from django.core.exceptions import ValidationError
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.decorators.http import require_POST,require_GET
@@ -13,6 +13,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def hello(request):
     return HttpResponse("Hola mundo")
+
 
 def mostrar_base_datos(request):
     roles = Rol.objects.all()
@@ -64,7 +65,7 @@ def login_view(request):
                     if usuario.rol.nombre_rol == 'Administrador':
                         return redirect('admin_dashboard')
                     else:
-                        return redirect('user_dashboard')
+                        return redirect('admin_dashboard')
                 else:
                     form.add_error('password', 'Contraseña incorrecta')
             except Usuario.DoesNotExist:
@@ -174,6 +175,7 @@ def detalles_proyecto(request, proyecto_id):
     agregar_documento_form = AgregarDocumentoForm(proyecto, request.POST or None)
     agregar_riesgo_form = AgregarRiesgoForm(proyecto, request.POST or None)
     agregar_fase_form = AgregarFaseForm(proyecto, request.POST or None)
+    editar_proyecto_form = ProyectoEditarForm(instance=proyecto)
 
     contexto = {
         'proyecto': proyecto,
@@ -188,6 +190,7 @@ def detalles_proyecto(request, proyecto_id):
         'agregar_documento_form': agregar_documento_form,
         'agregar_riesgo_form': agregar_riesgo_form,
         'agregar_fase_form': agregar_fase_form,
+        'form': editar_proyecto_form,
     }
 
     return render(request, 'MenusAdmins/detallesproyecto.html', contexto)
@@ -271,3 +274,20 @@ def agregar_fase(request, proyecto_id):
         form = AgregarFaseForm(proyecto)
     
     return render(request, 'MenusAdmins/detallesproyecto.html', {'form': form})
+
+def editar_proyecto(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    
+    if request.method == 'POST':
+        form = ProyectoEditarForm(request.POST, instance=proyecto)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_proyecto', proyecto_id=proyecto_id)
+    else:
+        form = ProyectoEditarForm(instance=proyecto)
+    
+    context = {
+        'form': form,
+        'proyecto': proyecto,
+    }
+    return render(request, 'MenusAdmins/editarproyecto.html', context)

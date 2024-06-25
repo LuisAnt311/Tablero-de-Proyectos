@@ -36,6 +36,7 @@ class Proyecto(models.Model):
     def __str__(self):
         return self.nombre_proyecto
 
+
 class Impacto(models.Model):
     id = models.AutoField(primary_key=True)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='impactos')
