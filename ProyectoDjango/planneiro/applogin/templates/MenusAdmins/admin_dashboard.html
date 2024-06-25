@@ -30,7 +30,12 @@
         </div>
     </div>
 </div>
-
+<form method="GET" action="{% url 'admin_dashboard' %}">
+    <div class="form-group">
+        <input type="text" name="q" class="form-control" placeholder="Buscar proyectos...">
+        <button type="submit" class="btn btn-primary mt-2">Buscar</button>
+    </div>
+</form>
 <!-- Tabla de proyectos existentes -->
 <div class="table-responsive">
     <table class="table table-striped table-bordered">

@@ -72,23 +72,36 @@ def login_view(request):
 
     return render(request, 'applogin/login.html', {'form': form})
 
+from django.db.models import Q
 
 def admin_dashboard(request):
     if request.session.get('usuario_rol') != 'Administrador':
         return redirect('login')  # Redireccionar si el usuario no es administrador
     
     usuarios = Usuario.objects.all()
-    proyectos = Proyecto.objects.all()  # Asegúrate de obtener los proyectos
-    form = ProyectoForm()  # Crear una instancia del formulario
+    proyectos = Proyecto.objects.all()  # Obtén todos los proyectos inicialmente
+
+    # Obtener el término de búsqueda del parámetro GET 'q'
+    query = request.GET.get('q')
+    if query:
+        # Filtrar proyectos por nombre_proyecto, estado y admin_proyecto_usuario__nombre_usuario
+        proyectos = proyectos.filter(
+            Q(nombre_proyecto__icontains=query) |
+            Q(estado__icontains=query) |
+            Q(admin_proyecto_usuario__nombre_usuario__icontains=query)
+        )
+
+    form = ProyectoForm()  # Crear una instancia del formulario de proyecto
 
     contexto = {
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
         'usuarios': usuarios,
-        'proyectos': proyectos,  # Añadir los proyectos al contexto
-        'form': form,  # Añadir el formulario al contexto
+        'proyectos': proyectos,  # Incluir proyectos filtrados o todos si no hay búsqueda
+        'form': form,  # Incluir formulario en el contexto
     }
     return render(request, 'MenusAdmins/admin_dashboard.html', contexto)
+
 
 
 def user_dashboard(request):
@@ -117,10 +130,10 @@ def agregar_proyecto(request):
         form = ProyectoForm(request.POST)
         if form.is_valid():
             form.save()
-            return JsonResponse({'message': 'Bien'})  # Devuelve una respuesta JSON indicando éxito
+            return redirect('login')  # Devuelve una respuesta JSON indicando éxito
         else:
             errors = form.errors.as_json()
-            return JsonResponse({'errors': errors}, status=400)  # Devuelve errores en JSON con estado 400 (Bad Request)
+            return redirect('login')  # Devuelve errores en JSON con estado 400 (Bad Request)
     else:
         form = ProyectoForm()
 
