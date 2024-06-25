@@ -161,6 +161,23 @@ class AgregarDocumentoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.instance.proyecto = proyecto
 
+class AgregarDocumentoFormProyecto(forms.ModelForm):
+    class Meta:
+        model = Documento
+        fields = ['proyecto', 'descripcion', 'url_documento']
+        widgets = {
+            'proyecto': forms.Select(attrs={'class': 'form-control'}),
+            'descripcion': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la descripción'}),
+            'url_documento': forms.URLInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la URL del documento'}),
+        }
+
+    def __init__(self, usuario, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Filtrar los proyectos en los que el usuario es recurso humano
+        self.fields['proyecto'].queryset = Proyecto.objects.filter(recursos_humanos__usuario=usuario)
+
+
+
 class AgregarRiesgoForm(forms.ModelForm):
     class Meta:
         model = Riesgo

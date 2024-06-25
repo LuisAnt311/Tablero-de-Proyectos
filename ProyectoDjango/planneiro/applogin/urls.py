@@ -14,6 +14,8 @@ urlpatterns = [
     path('agregar_proyecto/', views.agregar_proyecto, name='agregar_proyecto'),
     path('registrar_usuario/', views.registrar_usuario, name='registrar_usuario'),
 
+    path('agregar_documentousuario/<int:proyecto_id>/', views.agregar_documento_usuario, name='agregar_documentousuario'),
+
    path('insertar_usuario/', views.insertar_usuario, name='insertar_usuario'),
 
     path('proyecto/<int:proyecto_id>/agregar-fase/', views.agregar_fase, name='agregar_fase'),

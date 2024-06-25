@@ -138,16 +138,57 @@ def insertar_usuario(request):
             return HttpResponse(f"Formulario inválido: {form.errors}")
     return HttpResponse("Solicitud no válida.")
 
+from .forms import AgregarDocumentoFormProyecto
 def user_dashboard(request):
     if request.session.get('usuario_rol') != 'Usuario':
         return redirect('login')  # Redireccionar si el usuario no es usuario normal
 
+    usuario_id = request.session.get('usuario_id')
+    usuario = Usuario.objects.get(pk=usuario_id)
+
+    # Obtener todos los proyectos en los que el usuario es recurso humano
+    proyectos = Proyecto.objects.filter(recursos_humanos__usuario=usuario)
+
+    # Implementar búsqueda por nombre de proyecto
+    query = request.GET.get('q')
+    if query:
+        proyectos = proyectos.filter(
+            Q(nombre_proyecto__icontains=query)
+        )
+
+    # Si se envía el formulario para agregar documento
+    if request.method == 'POST':
+        form = AgregarDocumentoFormProyecto(usuario, request.POST)
+        if form.is_valid():
+            documento = form.save()
+            return redirect('user_dashboard')  # Redireccionar después de guardar el documento
+    else:
+        form = AgregarDocumentoFormProyecto(usuario)
+
     contexto = {
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
+        'proyectos': proyectos,
+        'form': form,  # Pasar el formulario al contexto
     }
     return render(request, 'MenusUsuarios/user_dashboard.html', contexto)
 
+def agregar_documento_usuario(request, proyecto_id):
+    proyecto = Proyecto.objects.get(pk=proyecto_id)
+    if request.method == 'POST':
+        form = AgregarDocumentoFormProyecto(request.POST, usuario=request.user)
+        if form.is_valid():
+            documento = form.save(commit=False)
+            documento.proyecto = proyecto
+            documento.save()
+            return redirect('user_dashboard')  # Redireccionar después de guardar el documento
+    else:
+        form = AgregarDocumentoFormProyecto(usuario=request.user)
+
+    contexto = {
+        'form': form,
+        'proyecto': proyecto,
+    }
 
 @require_GET
 def logout_view(request):
