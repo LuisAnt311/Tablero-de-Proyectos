@@ -28,8 +28,18 @@ class ProyectoForm(forms.ModelForm):
         model = Proyecto
         fields = ['nombre_proyecto', 'admin_proyecto_usuario', 'estado', 'porcentaje', 'fecha_inicio', 'fecha_final', 'presupuesto', 'costo_final']
         widgets = {
-            'fecha_inicio': forms.DateInput(attrs={'type': 'date'}),
-            'fecha_final': forms.DateInput(attrs={'type': 'date'}),
+            'fecha_inicio': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'fecha_final': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'nombre_proyecto': forms.TextInput(attrs={'class': 'form-control'}),
+            'admin_proyecto_usuario': forms.Select(attrs={'class': 'form-control'}),
+            'estado': forms.Select(attrs={'class': 'form-control'}, choices=[
+                ('Pendiente', 'Pendiente'),
+                ('En proceso', 'En proceso'),
+                ('Finalizado', 'Finalizado'),
+            ]),
+            'porcentaje': forms.NumberInput(attrs={'class': 'form-control'}),
+            'presupuesto': forms.NumberInput(attrs={'class': 'form-control'}),
+            'costo_final': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def clean(self):

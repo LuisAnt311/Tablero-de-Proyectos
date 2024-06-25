@@ -58,29 +58,28 @@
 </head>
 <body>
     <!-- Header -->
-    <div class="header">
+    <div class="header bg-dark">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-auto">
-                    <img src="{% static 'applogin/images/Logo.png' %}" alt="Plannerio Logo" class="logo">
-                    <span class="text-white font-weight-bold">Plannerio</span>
+                    <img src="{% static 'applogin/images/Logo.png' %}" alt="Plannerio Logo" class="logo" style="height: 50px;">
+                    <span class="text-white font-weight-bold ml-2" style="font-size: 1.5rem;">Plannerio</span>
                 </div>
                 <div class="col-md-auto ml-auto">
-                    <ul class="navbar-nav">
+                    <ul class="nav">
+                      
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Perfil</a>
+                            <a class="nav-link text-white" href="#">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Configuración</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+                            <a class="nav-link text-white" href="{% url 'logout' %}">Cerrar Sesión</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
     </div>
+    
 
     <!-- Contenido principal -->
     <div class="container mt-4">

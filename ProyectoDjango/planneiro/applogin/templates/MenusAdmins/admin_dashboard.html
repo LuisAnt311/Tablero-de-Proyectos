@@ -1,77 +1,105 @@
 {% extends 'MenusAdmins/base_dashboard.html' %}
+
+
 {% block title %}Panel de Administrador{% endblock %}
 {% block content %}
 
-<h2>Proyectos</h2>
+<center><h2>Proyectos</h2></center>
+{% include 'MenusAdmins/Modales/AddProyect.html' %}
 
-<!-- Botón para abrir modal -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#AnadirProyecto">
-    Agregar Proyecto
-</button>
+<!-- Tabla de proyectos existentes -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+         
+            <!-- Formulario de búsqueda -->
+            <form method="GET" action="{% url 'admin_dashboard' %}">
+                <div class="input-group mb-3">
+                    <input type="text" name="q" class="form-control" placeholder="Buscar proyectos...">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+            </form>
 
-<!-- Modal para agregar proyecto -->
-<div class="modal fade" id="AnadirProyecto" tabindex="-1" role="dialog" aria-labelledby="modalAgregarProyectoLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalAgregarProyectoLabel">Agregar Proyecto</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <!-- Botones para agregar recursos -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#AnadirProyecto">
+                        <i class="fas fa-plus-circle mr-2"></i> Agregar Proyecto
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#AnadirRecursoHumano">
+                        <i class="fas fa-user-plus mr-2"></i> Agregar Recurso Humano
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button type="button" class="btn btn-info btn-lg btn-block" data-toggle="modal" data-target="#AnadirRecursoMaterial">
+                        <i class="fas fa-box-open mr-2"></i> Asignar Recurso Material
+                    </button>
+                </div>
             </div>
-            <div class="modal-body">
-                <form method="post" action="{% url 'agregar_proyecto' %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                </form>
-                
+
+            <!-- Tabla de proyectos paginada -->
+            <div class="table-responsive mt-4">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre Proyecto</th>
+                            <th>Administrador</th>
+                            <th>Estado</th>
+                            <th>Porcentaje</th>
+                            <th>Fecha de Inicio</th>
+                            <th>Fecha Final</th>
+                            <th>Presupuesto</th>
+                            <th>Costo Final</th>
+                            <th>Detalles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for proyecto in proyectos %}
+                        <tr>
+                            <td>{{ proyecto.id }}</td>
+                            <td>{{ proyecto.nombre_proyecto }}</td>
+                            <td>{{ proyecto.admin_proyecto_usuario.nombre_usuario }}</td>
+                            <td>{{ proyecto.estado }}</td>
+                            <td>{{ proyecto.porcentaje }}</td>
+                            <td>{{ proyecto.fecha_inicio }}</td>
+                            <td>{{ proyecto.fecha_final }}</td>
+                            <td>{{ proyecto.presupuesto }}</td>
+                            <td>{{ proyecto.costo_final }}</td>
+                            <td>
+                                <a href="{% url 'detalles_proyecto' proyecto.id %}" class="btn btn-info">Ver Detalles</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="10">No se encontraron proyectos.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Paginación -->
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination justify-content-center">
+                        {% if proyectos.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ proyectos.previous_page_number }}">{{ proyectos.previous_page_number }}</a></li>
+                        {% endif %}
+                        
+                        <li class="page-item active"><a class="page-link" href="?page={{ proyectos.number }}">{{ proyectos.number }}</a></li>
+                        
+                        {% if proyectos.has_next %}
+                        <li class="page-item"><a class="page-link" href="?page={{ proyectos.next_page_number }}">{{ proyectos.next_page_number }}</a></li>
+                        <li class="page-item"><a class="page-link" href="?page={{ proyectos.paginator.num_pages }}">&raquo;</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
-<form method="GET" action="{% url 'admin_dashboard' %}">
-    <div class="form-group">
-        <input type="text" name="q" class="form-control" placeholder="Buscar proyectos...">
-        <button type="submit" class="btn btn-primary mt-2">Buscar</button>
-    </div>
-</form>
-<!-- Tabla de proyectos existentes -->
-<div class="table-responsive">
-    <table class="table table-striped table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre Proyecto</th>
-                <th>Administrador</th>
-                <th>Estado</th>
-                <th>Porcentaje</th>
-                <th>Fecha de Inicio</th>
-                <th>Fecha Final</th>
-                <th>Presupuesto</th>
-                <th>Costo Final</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for proyecto in proyectos %}
-            <tr>
-                <td>{{ proyecto.id }}</td>
-                <td>{{ proyecto.nombre_proyecto }}</td>
-                <td>{{ proyecto.admin_proyecto_usuario.nombre_usuario }}</td>
-                <td>{{ proyecto.estado }}</td>
-                <td>{{ proyecto.porcentaje }}</td>
-                <td>{{ proyecto.fecha_inicio }}</td>
-                <td>{{ proyecto.fecha_final }}</td>
-                <td>{{ proyecto.presupuesto }}</td>
-                <td>{{ proyecto.costo_final }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="9">No se encontraron proyectos.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
 {% endblock %}

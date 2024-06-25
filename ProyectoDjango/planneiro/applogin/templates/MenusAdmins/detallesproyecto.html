@@ -1,0 +1,116 @@
+{% extends 'MenusAdmins/base_dashboard.html' %}
+
+{% block title %}Detalles del Proyecto: {{ proyecto.nombre_proyecto }}{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Detalles del Proyecto: {{ proyecto.nombre_proyecto }}</h2>
+            <p>Administrador: {{ proyecto.admin_proyecto_usuario.nombre_usuario }}</p>
+            <p>Estado: {{ proyecto.estado }}</p>
+            <p>Porcentaje: {{ proyecto.porcentaje }}</p>
+            <p>Fecha de Inicio: {{ proyecto.fecha_inicio }}</p>
+            <p>Fecha Final: {{ proyecto.fecha_final }}</p>
+            <p>Presupuesto: {{ proyecto.presupuesto }}</p>
+            <p>Costo Final: {{ proyecto.costo_final }}</p>
+
+            <!-- Aquí empiezan las tablas de detalles relacionados -->
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <h3>Impactos</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Impacto</th>
+                                    <th>Plan de Impacto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for impacto in impactos %}
+                                <tr>
+                                    <td>{{ impacto.id }}</td>
+                                    <td>{{ impacto.impacto }}</td>
+                                    <td>{{ impacto.plan_de_impacto }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">No se encontraron impactos.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <!-- Aquí continúan las otras tablas (Recursos Materiales, Recursos Humanos, Documentos, Fases, Riesgos) -->
+                    <h3>Otras Tablas de Detalles</h3>
+                    <!-- Tabla de Recursos Materiales -->
+                    <h4>Recursos Materiales</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre Recurso</th>
+                                    <th>Cantidad</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for recurso_material in proyecto.recursos_materiales.all %}
+                                <tr>
+                                    <td>{{ recurso_material.id }}</td>
+                                    <td>{{ recurso_material.nombre_recurso }}</td>
+                                    <td>{{ recurso_material.cantidad }}</td>
+                                    <td>{{ recurso_material.descripcion }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4">No se encontraron recursos materiales.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tabla de Recursos Humanos -->
+                    <h4>Recursos Humanos</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre Usuario</th>
+                                    <th>Rol</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for recurso_humano in proyecto.recursos_humanos.all %}
+                                <tr>
+                                    <td>{{ recurso_humano.id }}</td>
+                                    <td>{{ recurso_humano.usuario.nombre_usuario }}</td>
+                                    <td>{{ recurso_humano.usuario.rol.nombre_rol }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">No se encontraron recursos humanos.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Puedes agregar más tablas para Documentos, Fases, Riesgos, etc. -->
+
+                </div>
+            </div>
+            <!-- Aquí finalizan las tablas de detalles relacionados -->
+        </div>
+    </div>
+</div>
+
+{% endblock %}

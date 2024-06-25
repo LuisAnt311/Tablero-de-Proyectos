@@ -1,12 +1,13 @@
 from django.http import HttpResponse
 from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo
 from .forms import FaseForm, RolForm, LoginForm,ProyectoForm
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.views.decorators.http import require_POST,require_GET
 from django.contrib.auth.decorators import login_required
 from .forms import ProyectoForm
 from django.http import JsonResponse
 from django.urls import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 
 def hello(request):
@@ -79,7 +80,7 @@ def admin_dashboard(request):
         return redirect('login')  # Redireccionar si el usuario no es administrador
     
     usuarios = Usuario.objects.all()
-    proyectos = Proyecto.objects.all()  # Obtén todos los proyectos inicialmente
+    proyectos = Proyecto.objects.all().order_by('id')  # Ordenar proyectos por ID
 
     # Obtener el término de búsqueda del parámetro GET 'q'
     query = request.GET.get('q')
@@ -91,13 +92,23 @@ def admin_dashboard(request):
             Q(admin_proyecto_usuario__nombre_usuario__icontains=query)
         )
 
+    # Paginación
+    paginator = Paginator(proyectos, 5)  # Mostrar 10 proyectos por página
+    page = request.GET.get('page')
+    try:
+        proyectos_paginados = paginator.page(page)
+    except PageNotAnInteger:
+        proyectos_paginados = paginator.page(1)
+    except EmptyPage:
+        proyectos_paginados = paginator.page(paginator.num_pages)
+
     form = ProyectoForm()  # Crear una instancia del formulario de proyecto
 
     contexto = {
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
         'usuarios': usuarios,
-        'proyectos': proyectos,  # Incluir proyectos filtrados o todos si no hay búsqueda
+        'proyectos': proyectos_paginados,  # Cambiar a proyectos paginados
         'form': form,  # Incluir formulario en el contexto
     }
     return render(request, 'MenusAdmins/admin_dashboard.html', contexto)
@@ -146,3 +157,24 @@ def agregar_proyecto(request):
         'proyectos': proyectos,
     }
     return render(request, 'MenusAdmins/admin_dashboard.html', context) # Imprimir errores del formulario para depuración
+
+def detalles_proyecto(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    impactos = Impacto.objects.filter(proyecto=proyecto)
+    recursos_materiales = RecursoMaterial.objects.filter(proyecto=proyecto)
+    recursos_humanos = RecursoHumano.objects.filter(proyecto=proyecto)
+    documentos = Documento.objects.filter(proyecto=proyecto)
+    fases = Fase.objects.filter(proyecto=proyecto)
+    riesgos = Riesgo.objects.filter(proyecto=proyecto)
+
+    contexto = {
+        'proyecto': proyecto,
+        'impactos': impactos,
+        'recursos_materiales': recursos_materiales,
+        'recursos_humanos': recursos_humanos,
+        'documentos': documentos,
+        'fases': fases,
+        'riesgos': riesgos,
+    }
+
+    return render(request, 'MenusAdmins/detallesproyecto.html', contexto)
