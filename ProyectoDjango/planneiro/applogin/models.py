@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 #Usuarios
@@ -30,6 +31,7 @@ class Proyecto(models.Model):
     fecha_final = models.DateField()
     presupuesto = models.FloatField()
     costo_final = models.FloatField()
+    descripcion = models.TextField()
 
     def __str__(self):
         return self.nombre_proyecto
@@ -63,6 +65,7 @@ class RecursoHumano(models.Model):
 
 class Documento(models.Model):
     id = models.AutoField(primary_key=True)
+    descripcion = models.TextField(default='Descripción predeterminada')  # Define aquí tu valor por defecto
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE, related_name='documentos')
     url_documento = models.URLField()
 

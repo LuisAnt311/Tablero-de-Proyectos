@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo
-from .forms import FaseForm, RolForm, LoginForm,ProyectoForm
+from .forms import FaseForm, RolForm, LoginForm,ProyectoForm,UsuarioForm,AsignarRecursoHumanoForm, AgregarRecursoMaterialForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm
+
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.decorators.http import require_POST,require_GET
 from django.contrib.auth.decorators import login_required
@@ -157,7 +158,7 @@ def agregar_proyecto(request):
         'proyectos': proyectos,
     }
     return render(request, 'MenusAdmins/admin_dashboard.html', context) # Imprimir errores del formulario para depuración
-
+from .forms import AgregarRecursoMaterialForm, AsignarRecursoHumanoForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm
 def detalles_proyecto(request, proyecto_id):
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     impactos = Impacto.objects.filter(proyecto=proyecto)
@@ -167,6 +168,13 @@ def detalles_proyecto(request, proyecto_id):
     fases = Fase.objects.filter(proyecto=proyecto)
     riesgos = Riesgo.objects.filter(proyecto=proyecto)
 
+    # Inicialización de los formularios con el contexto del proyecto
+    agregar_recurso_material_form = AgregarRecursoMaterialForm(proyecto, request.POST or None)
+    asignar_recurso_humano_form = AsignarRecursoHumanoForm(proyecto, request.POST or None)
+    agregar_documento_form = AgregarDocumentoForm(proyecto, request.POST or None)
+    agregar_riesgo_form = AgregarRiesgoForm(proyecto, request.POST or None)
+    agregar_fase_form = AgregarFaseForm(proyecto, request.POST or None)
+
     contexto = {
         'proyecto': proyecto,
         'impactos': impactos,
@@ -175,6 +183,82 @@ def detalles_proyecto(request, proyecto_id):
         'documentos': documentos,
         'fases': fases,
         'riesgos': riesgos,
+        'agregar_recurso_material_form': agregar_recurso_material_form,
+        'asignar_recurso_humano_form': asignar_recurso_humano_form,
+        'agregar_documento_form': agregar_documento_form,
+        'agregar_riesgo_form': agregar_riesgo_form,
+        'agregar_fase_form': agregar_fase_form,
     }
 
     return render(request, 'MenusAdmins/detallesproyecto.html', contexto)
+
+def registrar_usuario(request):
+    if request.method == 'POST':
+        form = UsuarioForm(request.POST)
+        if form.is_valid():
+            form.save()  # Guardar el formulario si es válido
+            return redirect('inicio')  # Redireccionar a la página de inicio u otra página deseada después de guardar
+    else:
+        form = UsuarioForm()
+
+    return render(request, 'MenusAdmins/Modales/AddRecursoHumano.html', {'form': form})
+
+def asignar_recurso_humano(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    if request.method == 'POST':
+        form = AsignarRecursoHumanoForm(proyecto, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_proyecto', proyecto_id=proyecto_id)
+    else:
+        form = AsignarRecursoHumanoForm(proyecto)
+    
+    return render(request, 'MenusAdmins/detallesproyecto.html', {'form': form})
+
+def agregar_recurso_material(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    if request.method == 'POST':
+        form = AgregarRecursoMaterialForm(proyecto, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_proyecto', proyecto_id=proyecto_id)
+    else:
+        form = AgregarRecursoMaterialForm(proyecto)
+    
+    return render(request, 'MenusAdmins/detallesproyecto.html', {'form': form})
+
+def agregar_documento(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    if request.method == 'POST':
+        form = AgregarDocumentoForm(proyecto, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_proyecto', proyecto_id=proyecto_id)
+    else:
+        form = AgregarDocumentoForm(proyecto)
+    
+    return render(request, 'MenusAdmins/detallesproyecto.html', {'form': form})
+
+def agregar_riesgo(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    if request.method == 'POST':
+        form = AgregarRiesgoForm(proyecto, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_proyecto', proyecto_id=proyecto_id)
+    else:
+        form = AgregarRiesgoForm(proyecto)
+    
+    return render(request, 'MenusAdmins/detallesproyecto.html', {'form': form})
+
+def agregar_fase(request, proyecto_id):
+    proyecto = get_object_or_404(Proyecto, id=proyecto_id)
+    if request.method == 'POST':
+        form = AgregarFaseForm(proyecto, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_proyecto', proyecto_id=proyecto_id)
+    else:
+        form = AgregarFaseForm(proyecto)
+    
+    return render(request, 'MenusAdmins/detallesproyecto.html', {'form': form})

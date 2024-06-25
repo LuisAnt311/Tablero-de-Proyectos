@@ -6,6 +6,7 @@
 
 <div class="container mt-4">
     <div class="row">
+        
         <div class="col-md-12">
             <h2>Detalles del Proyecto: {{ proyecto.nombre_proyecto }}</h2>
             <p>Administrador: {{ proyecto.admin_proyecto_usuario.nombre_usuario }}</p>
@@ -15,7 +16,126 @@
             <p>Fecha Final: {{ proyecto.fecha_final }}</p>
             <p>Presupuesto: {{ proyecto.presupuesto }}</p>
             <p>Costo Final: {{ proyecto.costo_final }}</p>
+            <p>{{ proyecto.descripcion }}</p>
+            <div class="mt-4">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAsignarRecursoHumano">
+                    Asignar Recurso Humano
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarRecursoMaterial">
+                    Agregar Recurso Material
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarDocumento">
+                    Agregar Documento
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarFase">
+                    Agregar Fase
+                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarRiesgo">
+                    Agregar Riesgo
+                </button>
+            </div>
+        </div>
+        <form action="{% url 'agregar_recurso_material' proyecto.id %}" method="post">
+            {% csrf_token %}
+            {{ agregar_recurso_material_form.as_p }}
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+        <form action="{% url 'asignar_recurso_humano' proyecto.id %}" method="post">
+            {% csrf_token %}
+            {{ asignar_recurso_humano_form.as_p }}
+            <button type="submit" class="btn btn-primary">Guardar</button>
+        </form>
+            <!-- Modales -->
+            <!-- Modal Asignar Recurso Humano -->
+            <div class="modal fade" id="modalAsignarRecursoHumano" tabindex="-1" aria-labelledby="modalAsignarRecursoHumanoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAsignarRecursoHumanoLabel">Asignar Recurso Humano</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                         
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Modal Agregar Recurso Material -->
+            <div class="modal fade" id="modalAgregarRecursoMaterial" tabindex="-1" aria-labelledby="modalAgregarRecursoMaterialLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAgregarRecursoMaterialLabel">Agregar Recurso Material</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'agregar_recurso_material' proyecto.id %}" method="post">
+                                {% csrf_token %}
+                                {{ agregar_recurso_material_form.as_p }}
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Agregar Documento -->
+            <div class="modal fade" id="modalAgregarDocumento" tabindex="-1" aria-labelledby="modalAgregarDocumentoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAgregarDocumentoLabel">Agregar Documento</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'agregar_documento' proyecto.id %}" method="post">
+                                {% csrf_token %}
+                                {{ agregar_documento_form.as_p }}
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Agregar Fase -->
+            <div class="modal fade" id="modalAgregarFase" tabindex="-1" aria-labelledby="modalAgregarFaseLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAgregarFaseLabel">Agregar Fase</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'agregar_fase' proyecto.id %}" method="post">
+                                {% csrf_token %}
+                                {{ agregar_fase_form.as_p }}
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Agregar Riesgo -->
+            <div class="modal fade" id="modalAgregarRiesgo" tabindex="-1" aria-labelledby="modalAgregarRiesgoLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAgregarRiesgoLabel">Agregar Riesgo</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{% url 'agregar_riesgo' proyecto.id %}" method="post">
+                                {% csrf_token %}
+                                {{ agregar_riesgo_form.as_p }}
+                                <button type="submit" class="btn btn-primary">Guardar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Aquí empiezan las tablas de detalles relacionados -->
             <div class="row mt-4">
                 <div class="col-md-6">
