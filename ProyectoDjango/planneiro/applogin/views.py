@@ -1,9 +1,12 @@
 from django.http import HttpResponse
 from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo
-from .forms import FaseForm, RolForm, LoginForm
+from .forms import FaseForm, RolForm, LoginForm,ProyectoForm
 from django.shortcuts import render,redirect
 from django.views.decorators.http import require_POST,require_GET
 from django.contrib.auth.decorators import login_required
+from .forms import ProyectoForm
+from django.http import JsonResponse
+from django.urls import reverse
 # Create your views here.
 
 def hello(request):
@@ -73,10 +76,17 @@ def login_view(request):
 def admin_dashboard(request):
     if request.session.get('usuario_rol') != 'Administrador':
         return redirect('login')  # Redireccionar si el usuario no es administrador
+    
+    usuarios = Usuario.objects.all()
+    proyectos = Proyecto.objects.all()  # Asegúrate de obtener los proyectos
+    form = ProyectoForm()  # Crear una instancia del formulario
 
     contexto = {
         'usuario_nombre': request.session.get('usuario_nombre'),
         'usuario_rol': request.session.get('usuario_rol'),
+        'usuarios': usuarios,
+        'proyectos': proyectos,  # Añadir los proyectos al contexto
+        'form': form,  # Añadir el formulario al contexto
     }
     return render(request, 'MenusAdmins/admin_dashboard.html', contexto)
 
@@ -101,3 +111,25 @@ def logout_view(request):
     if 'usuario_rol' in request.session:
         del request.session['usuario_rol']
     return redirect('login')
+
+def agregar_proyecto(request):
+    if request.method == 'POST':
+        form = ProyectoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'message': 'Bien'})  # Devuelve una respuesta JSON indicando éxito
+        else:
+            errors = form.errors.as_json()
+            return JsonResponse({'errors': errors}, status=400)  # Devuelve errores en JSON con estado 400 (Bad Request)
+    else:
+        form = ProyectoForm()
+
+    usuarios = Usuario.objects.all()
+    proyectos = Proyecto.objects.all()
+
+    context = {
+        'form': form,
+        'usuarios': usuarios,
+        'proyectos': proyectos,
+    }
+    return render(request, 'MenusAdmins/admin_dashboard.html', context) # Imprimir errores del formulario para depuración

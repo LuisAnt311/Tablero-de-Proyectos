@@ -1,49 +1,104 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Panel de Administrador{% endblock %}</title>
+    
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
     <!-- Custom styles -->
     <style>
-        /* Estilos personalizados pueden ir aquí */
+        /* Estilo para el header */
+        .header {
+            background-color: #315e6e;
+            padding: 10px 0;
+            color: #fff;
+        }
+
+        /* Estilo para el footer */
+        .footer {
+            background-color: #77c5e0;
+            padding: 10px 0;
+            color: #fff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Estilo para el logo */
+        .logo {
+            max-height: 50px;
+            margin-right: 10px; /* Ajusta el margen según sea necesario */
+        }
+
+        /* Estilo para centrar el contenido principal */
+        .main-content {
+            min-height: 80vh; /* Asegura que el contenido principal ocupe al menos el 80% de la altura de la ventana */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Panel de Administrador</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Perfil</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Configuración</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
-                </li>
-            </ul>
+    <!-- Header -->
+    <div class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-auto">
+                    <img src="{% static 'applogin/images/Logo.png' %}" alt="Plannerio Logo" class="logo">
+                    <span class="text-white font-weight-bold">Plannerio</span>
+                </div>
+                <div class="col-md-auto ml-auto">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Perfil</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Configuración</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Cerrar Sesión</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-    </nav>
+    </div>
 
     <!-- Contenido principal -->
     <div class="container mt-4">
         {% block content %}
         {% endblock %}
-    </div>
+        
+        <!-- Formulario para agregar proyecto en modal -->
+   <!-- Modal para agregar proyecto -->
 
-    <!-- Bootstrap JS y dependencias -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+
+    <!-- Scripts al final del body -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Script personalizado -->
+    <script>
+        // Aquí puedes colocar tu script personalizado si es necesario
+    </script>
 </body>
 </html>
