@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from .models import Rol, Usuario, Proyecto, Impacto, RecursoMaterial, RecursoHumano, Documento, Fase, Riesgo
 from .forms import FaseForm, RolForm, LoginForm,ProyectoForm,UsuarioForm,AsignarRecursoHumanoForm, AgregarRecursoMaterialForm, AgregarDocumentoForm, AgregarRiesgoForm, AgregarFaseForm
-
+from django.core.exceptions import ValidationError
 from django.shortcuts import render,redirect,get_object_or_404
 from django.views.decorators.http import require_POST,require_GET
 from django.contrib.auth.decorators import login_required
@@ -204,16 +204,25 @@ def registrar_usuario(request):
     return render(request, 'MenusAdmins/Modales/AddRecursoHumano.html', {'form': form})
 
 def asignar_recurso_humano(request, proyecto_id):
+    print(f"Proyecto ID: {proyecto_id}")  # Debugging
+    
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)
     if request.method == 'POST':
         form = AsignarRecursoHumanoForm(proyecto, request.POST)
         if form.is_valid():
-            form.save()
-            return redirect('detalles_proyecto', proyecto_id=proyecto_id)
+            try:
+                form.save()
+                return redirect('detalles_proyecto', proyecto_id=proyecto_id)
+            except ValidationError as e:
+                print(f"Validation Error: {e.message}")  # Debugging
+                form.add_error('usuario', e.message)
+        else:
+            print("Formulario no válido")  # Debugging
     else:
         form = AsignarRecursoHumanoForm(proyecto)
     
-    return render(request, 'MenusAdmins/detallesproyecto.html', {'form': form})
+    return render(request, 'MenusAdmins/detallesproyecto.html', {'form': form, 'proyecto_id': proyecto_id})
+
 
 def agregar_recurso_material(request, proyecto_id):
     proyecto = get_object_or_404(Proyecto, id=proyecto_id)

@@ -3,12 +3,34 @@
 {% block title %}Detalles del Proyecto: {{ proyecto.nombre_proyecto }}{% endblock %}
 
 {% block content %}
-
 <div class="container mt-4">
     <div class="row">
-        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
         <div class="col-md-12">
-            <h2>Detalles del Proyecto: {{ proyecto.nombre_proyecto }}</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado:</label>
+                    <select id="estado" name="estado" class="form-control">
+                        <option value="Iniciado" {% if proyecto.estado == "Iniciado" %}selected{% endif %}>Iniciado</option>
+                        <option value="Enprogreso" {% if proyecto.estado == "Enprogreso" %}selected{% endif %}>En progreso</option>
+                        <option value="Finalizado" {% if proyecto.estado == "Finalizado" %}selected{% endif %}>Finalizado</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="porcentaje" class="form-label">Porcentaje:</label>
+                    <input type="number" id="porcentaje" name="porcentaje" class="form-control" value="{{ proyecto.porcentaje }}" min="0" max="100" step="0.01">
+                </div>
+                <div class="mb-3">
+                    <label for="costo_final" class="form-label">Costo Final:</label>
+                    <input type="number" id="costo_final" name="costo_final" class="form-control" value="{{ proyecto.costo_final }}" step="0.01">
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Guardar Cambios</button>
+            </form>
+
+            <h2 class="mt-4">Detalles del Proyecto: {{ proyecto.nombre_proyecto }}</h2>
             <p>Administrador: {{ proyecto.admin_proyecto_usuario.nombre_usuario }}</p>
             <p>Estado: {{ proyecto.estado }}</p>
             <p>Porcentaje: {{ proyecto.porcentaje }}</p>
@@ -17,157 +39,198 @@
             <p>Presupuesto: {{ proyecto.presupuesto }}</p>
             <p>Costo Final: {{ proyecto.costo_final }}</p>
             <p>{{ proyecto.descripcion }}</p>
+
             <div class="mt-4">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAsignarRecursoHumano">
-                    Asignar Recurso Humano
-                </button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarRecursoMaterial">
-                    Agregar Recurso Material
-                </button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarDocumento">
-                    Agregar Documento
-                </button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarFase">
-                    Agregar Fase
-                </button>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarRiesgo">
-                    Agregar Riesgo
-                </button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAsignarRecursoHumano">Asignar Recurso Humano</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarRecursoMaterial">Agregar Recurso Material</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarDocumento">Agregar Documento</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarFase">Agregar Fase</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAgregarRiesgo">Agregar Riesgo</button>
             </div>
         </div>
-        <form action="{% url 'agregar_recurso_material' proyecto.id %}" method="post">
-            {% csrf_token %}
-            {{ agregar_recurso_material_form.as_p }}
-            <button type="submit" class="btn btn-primary">Guardar</button>
-        </form>
-        <form action="{% url 'asignar_recurso_humano' proyecto.id %}" method="post">
-            {% csrf_token %}
-            {{ asignar_recurso_humano_form.as_p }}
-            <button type="submit" class="btn btn-primary">Guardar</button>
-        </form>
-            <!-- Modales -->
-            <!-- Modal Asignar Recurso Humano -->
-            <div class="modal fade" id="modalAsignarRecursoHumano" tabindex="-1" aria-labelledby="modalAsignarRecursoHumanoLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalAsignarRecursoHumanoLabel">Asignar Recurso Humano</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                         
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Modal Agregar Recurso Material -->
-            <div class="modal fade" id="modalAgregarRecursoMaterial" tabindex="-1" aria-labelledby="modalAgregarRecursoMaterialLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalAgregarRecursoMaterialLabel">Agregar Recurso Material</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{% url 'agregar_recurso_material' proyecto.id %}" method="post">
-                                {% csrf_token %}
-                                {{ agregar_recurso_material_form.as_p }}
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </form>
-                        </div>
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Accordion Item #1
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <strong>This is the first item's accordion body.</strong> It is shown by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
                     </div>
                 </div>
             </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Accordion Item #2
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <strong>This is the second item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Accordion Item #3
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <!-- Modal Agregar Documento -->
-            <div class="modal fade" id="modalAgregarDocumento" tabindex="-1" aria-labelledby="modalAgregarDocumentoLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalAgregarDocumentoLabel">Agregar Documento</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{% url 'agregar_documento' proyecto.id %}" method="post">
-                                {% csrf_token %}
-                                {{ agregar_documento_form.as_p }}
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </form>
-                        </div>
+        <!-- Modales -->
+        <!-- Modal Asignar Recurso Humano -->
+        <div class="modal fade" id="modalAsignarRecursoHumano" tabindex="-1" aria-labelledby="modalAsignarRecursoHumanoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAsignarRecursoHumanoLabel">Asignar Recurso Humano</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'asignar_recurso_humano' proyecto.id %}" method="post">
+                            {% csrf_token %}
+                            {{ asignar_recurso_humano_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Modal Agregar Fase -->
-            <div class="modal fade" id="modalAgregarFase" tabindex="-1" aria-labelledby="modalAgregarFaseLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalAgregarFaseLabel">Agregar Fase</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{% url 'agregar_fase' proyecto.id %}" method="post">
-                                {% csrf_token %}
-                                {{ agregar_fase_form.as_p }}
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </form>
-                        </div>
+        <!-- Modal Agregar Recurso Material -->
+        <div class="modal fade" id="modalAgregarRecursoMaterial" tabindex="-1" aria-labelledby="modalAgregarRecursoMaterialLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAgregarRecursoMaterialLabel">Agregar Recurso Material</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'agregar_recurso_material' proyecto.id %}" method="post">
+                            {% csrf_token %}
+                            {{ agregar_recurso_material_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Modal Agregar Riesgo -->
-            <div class="modal fade" id="modalAgregarRiesgo" tabindex="-1" aria-labelledby="modalAgregarRiesgoLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalAgregarRiesgoLabel">Agregar Riesgo</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{% url 'agregar_riesgo' proyecto.id %}" method="post">
-                                {% csrf_token %}
-                                {{ agregar_riesgo_form.as_p }}
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </form>
-                        </div>
+        <!-- Modal Agregar Documento -->
+        <div class="modal fade" id="modalAgregarDocumento" tabindex="-1" aria-labelledby="modalAgregarDocumentoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAgregarDocumentoLabel">Agregar Documento</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'agregar_documento' proyecto.id %}" method="post">
+                            {% csrf_token %}
+                            {{ agregar_documento_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Modal Agregar Fase -->
+        <div class="modal fade" id="modalAgregarFase" tabindex="-1" aria-labelledby="modalAgregarFaseLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAgregarFaseLabel">Agregar Fase</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'agregar_fase' proyecto.id %}" method="post">
+                            {% csrf_token %}
+                            {{ agregar_fase_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Agregar Riesgo -->
+        <div class="modal fade" id="modalAgregarRiesgo" tabindex="-1" aria-labelledby="modalAgregarRiesgoLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalAgregarRiesgoLabel">Agregar Riesgo</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{% url 'agregar_riesgo' proyecto.id %}" method="post">
+                            {% csrf_token %}
+                            {{ agregar_riesgo_form.as_p }}
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
             <!-- Aquí empiezan las tablas de detalles relacionados -->
             <div class="row mt-4">
                 <div class="col-md-6">
-                    <h3>Impactos</h3>
+                    <h3>Riesgos</h3>
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Impacto</th>
-                                    <th>Plan de Impacto</th>
+                                    <th>Porcentaje Riesgo</th>
+                                    <th>Descripción</th>
+                                    <th>Plan de Mitigación</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for impacto in impactos %}
+                                {% for riesgo in riesgos %}
                                 <tr>
-                                    <td>{{ impacto.id }}</td>
-                                    <td>{{ impacto.impacto }}</td>
-                                    <td>{{ impacto.plan_de_impacto }}</td>
+                                    <td>{{ riesgo.id }}</td>
+                                    <td>{{ riesgo.porcentaje_riesgo }}</td>
+                                    <td>{{ riesgo.descripcion_riesgo }}</td>
+                                    <td>{{ riesgo.plan_mitigacion_riesgo }}</td>
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="3">No se encontraron impactos.</td>
+                                    <td colspan="4">No se encontraron riesgos.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                        <div class="pagination">
+                            {% if riesgos.has_previous %}
+                            <a href="?page={{ riesgos.previous_page_number }}">Anterior</a>
+                            {% endif %}
+                            <span>Página {{ riesgos.number }} de {{ riesgos.paginator.num_pages }}</span>
+                            {% if riesgos.has_next %}
+                            <a href="?page={{ riesgos.next_page_number }}">Siguiente</a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <!-- Aquí continúan las otras tablas (Recursos Materiales, Recursos Humanos, Documentos, Fases, Riesgos) -->
+                    <!-- Aquí continúan las otras tablas (Recursos Materiales, Recursos Humanos, Documentos, Fases) -->
                     <h3>Otras Tablas de Detalles</h3>
+            
                     <!-- Tabla de Recursos Materiales -->
                     <h4>Recursos Materiales</h4>
                     <div class="table-responsive">
@@ -181,7 +244,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for recurso_material in proyecto.recursos_materiales.all %}
+                                {% for recurso_material in recursos_materiales %}
                                 <tr>
                                     <td>{{ recurso_material.id }}</td>
                                     <td>{{ recurso_material.nombre_recurso }}</td>
@@ -195,8 +258,17 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        <div class="pagination">
+                            {% if recursos_materiales.has_previous %}
+                            <a href="?page={{ recursos_materiales.previous_page_number }}">Anterior</a>
+                            {% endif %}
+                            <span>Página {{ recursos_materiales.number }} de {{ recursos_materiales.paginator.num_pages }}</span>
+                            {% if recursos_materiales.has_next %}
+                            <a href="?page={{ recursos_materiales.next_page_number }}">Siguiente</a>
+                            {% endif %}
+                        </div>
                     </div>
-
+            
                     <!-- Tabla de Recursos Humanos -->
                     <h4>Recursos Humanos</h4>
                     <div class="table-responsive">
@@ -209,7 +281,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for recurso_humano in proyecto.recursos_humanos.all %}
+                                {% for recurso_humano in recursos_humanos %}
                                 <tr>
                                     <td>{{ recurso_humano.id }}</td>
                                     <td>{{ recurso_humano.usuario.nombre_usuario }}</td>
@@ -222,7 +294,86 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                        <div class="pagination">
+                            {% if recursos_humanos.has_previous %}
+                            <a href="?page={{ recursos_humanos.previous_page_number }}">Anterior</a>
+                            {% endif %}
+                            <span>Página {{ recursos_humanos.number }} de {{ recursos_humanos.paginator.num_pages }}</span>
+                            {% if recursos_humanos.has_next %}
+                            <a href="?page={{ recursos_humanos.next_page_number }}">Siguiente</a>
+                            {% endif %}
+                        </div>
                     </div>
+            
+                    <!-- Tabla de Documentos -->
+                    <h4>Documentos</h4>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Descripción</th>
+                                    <th>URL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for documento in documentos %}
+                                <tr>
+                                    <td>{{ documento.id }}</td>
+                                    <td>{{ documento.descripcion }}</td>
+                                    <td><a href="{{ documento.url_documento }}" target="_blank">Ver Documento</a></td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="3">No se encontraron documentos.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="pagination">
+                            {% if documentos.has_previous %}
+                            <a href="?page={{ documentos.previous_page_number }}">Anterior</a>
+                            {% endif %}
+                            <span>Página {{ documentos.number }} de {{ documentos.paginator.num_pages }}</span>
+                            {% if documentos.has_next %}
+                            <a href="?page={{ documentos.next_page_number }}">Siguiente</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <h4>Fases</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fase</th>
+                <th>Concluido</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fase in fases %}
+            <tr>
+                <td>{{ fase.id }}</td>
+                <td>{{ fase.fase }}</td>
+                <td>{% if fase.concluido %}Sí{% else %}No{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No se encontraron fases.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        {% if fases.has_previous %}
+        <a href="?page={{ fases.previous_page_number }}">Anterior</a>
+        {% endif %}
+        <span>Página {{ fases.number }} de {{ fases.paginator.num_pages }}</span>
+        {% if fases.has_next %}
+        <a href="?page={{ fases.next_page_number }}">Siguiente</a>
+        {% endif %}
+    </div>
+</div>
 
                     <!-- Puedes agregar más tablas para Documentos, Fases, Riesgos, etc. -->
 
